@@ -8,11 +8,12 @@ template-back-nest/
 │   ├── schema.prisma
 │   └── seed.ts
 ├── src/
-│   ├── auth/
-│   │   ├── dto/
-│   │   └── strategies/
-│   ├── health/
-│   ├── prisma/
+│   ├── modules/
+│   │   ├── auth/
+│   │   │   ├── dto/
+│   │   │   └── strategies/
+│   │   ├── health/
+│   │   └── prisma/
 │   ├── generated/
 │   ├── app.module.ts
 │   └── main.ts
@@ -28,9 +29,9 @@ template-back-nest/
 
 Contém o código-fonte da aplicação. O arquivo `main.ts` cria a aplicação NestJS, configura o `ValidationPipe` global, registra o Swagger e inicia o servidor. O arquivo `app.module.ts` é o módulo raiz e reúne os módulos funcionais.
 
-### Módulos
+### Módulos (em `src/modules/`)
 
-Cada domínio fica isolado em uma pasta e possui um arquivo `*.module.ts`. O módulo declara os controllers, providers e dependências daquele domínio. Neste projeto, `auth/`, `health/` e `prisma/` são módulos separados.
+Cada domínio fica isolado em uma pasta dentro de `src/modules/` e possui um arquivo `*.module.ts`. O módulo declara os controllers, providers e dependências daquele domínio. Neste projeto, `auth/`, `health/` e `prisma/` são módulos separados.
 
 ### Controllers
 
@@ -48,7 +49,7 @@ A pasta `dto/` contém objetos de transferência de dados. Eles descrevem e vali
 
 A pasta `strategies/` contém estratégias do Passport. A estratégia JWT extrai o token Bearer, valida sua assinatura e disponibiliza o payload autenticado.
 
-### `src/prisma/`
+### `src/modules/prisma/`
 
 Contém o módulo e o serviço que encapsulam o Prisma Client. O `PrismaService` configura o adaptador do MySQL e disponibiliza o acesso ao banco para os demais módulos.
 
