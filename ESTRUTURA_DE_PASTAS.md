@@ -8,6 +8,9 @@ template-back-nest/
 │   ├── schema.prisma
 │   └── seed.ts
 ├── src/
+│   ├── common/
+│   │   └── filters/
+│   │       └── global-exception.filter.ts
 │   ├── modules/
 │   │   ├── auth/
 │   │   │   ├── dto/
@@ -32,6 +35,10 @@ Contém o código-fonte da aplicação. O arquivo `main.ts` cria a aplicação N
 ### Módulos (em `src/modules/`)
 
 Cada domínio fica isolado em uma pasta dentro de `src/modules/` e possui um arquivo `*.module.ts`. O módulo declara os controllers, providers e dependências daquele domínio. Neste projeto, `auth/`, `health/` e `prisma/` são módulos separados.
+
+### Comum (em `src/common/`)
+
+Contém recursos compartilhados globalmente por toda a aplicação. No momento abriga os **Filters**, como o `global-exception.filter.ts` que centraliza e padroniza o retorno de todos os erros (inclusive erros não tratados) da aplicação.
 
 ### Controllers
 

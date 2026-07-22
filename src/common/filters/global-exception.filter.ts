@@ -22,16 +22,17 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    let message =
+    let message: unknown =
       exception instanceof HttpException
         ? exception.getResponse()
         : 'Internal server error';
 
     // Se a mensagem for um objeto (como nos erros de validação do class-validator), extraímos o 'message'
     if (typeof message === 'object' && message !== null && 'message' in message) {
-      message = (message as any).message;
+      message = (message as Record<string, unknown>).message;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     if (status === HttpStatus.INTERNAL_SERVER_ERROR) {
       this.logger.error(
         `[${request.method}] ${request.url} - ${
