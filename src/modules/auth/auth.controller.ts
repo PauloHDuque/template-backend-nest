@@ -1,6 +1,7 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, Res } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AccessTokenResponse, AuthService } from './auth.service';
+import { Response } from 'express';
+import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 
 @ApiTags('Authentication')
@@ -10,18 +11,27 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Authenticates a user and returns a JWT access token' })
+  @ApiOperation({ summary: 'Authenticates a user and sets a JWT access token in an HttpOnly cookie' })
   @ApiBody({ type: LoginDto })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Authentication completed successfully.',
-    schema: { example: { access_token: 'jwt-token' } },
+    description: 'Authentication completed successfully. Token set in cookie.',
+    schema: { example: { message: 'Authentication successful' } },
   })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
     description: 'The email or password is invalid.',
   })
-  login(@Body() credentials: LoginDto): Promise<AccessTokenResponse> {
-    return this.authService.login(credentials);
+  async login(@Body() credentials: LoginDto, @Res({ passthrough: true }) res: Response): Promise<{ message: string }> {
+    const { access_token } = await this.authService.login(credentials);
+    
+    res.cookie('access_token', access_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 3600000, // 1 hour
+    });
+    
+    return { message: 'Authentication successful' };
   }
 }
